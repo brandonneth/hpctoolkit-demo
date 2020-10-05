@@ -29,7 +29,7 @@ git clone https://github.com/spack/spack.git
 
 Spack comes with a premade binary, so the installation process is complete.
 
-## Step 2: Install HPCToolkit using spack
+## Step 2: Install HPCToolkit profilers using spack
 
 Spack's install command will perform the installation of HPCToolkit and its dependences:
 ```
@@ -38,6 +38,27 @@ spack/bin/spack install hpctoolkit
 
 This installation will take some time. Many of the following steps can be completed while the installation proceeds. If you choose to continue while the installation proceeds, create a new shell and navigate to your base directory.
 
-## Step 3: 
+## Step 3: Download HPCToolkit viewers
 
-## Step 3: 
+HPCToolkit's viewing functionality is provided separately from its profiling functionality. It is provided as a pre-compiled binary. To download, run:
+```
+wget http://hpctoolkit.org/download/hpcviewer/latest/hpcviewer-linux.gtk.x86_64.tgz
+```
+
+For this demo, we use the regular viewer. Downloading and using the trace viewer proceeds similarly.
+
+## Step 4: Configure X11 Forwarding
+
+We want to run the visualizing process on the client machine, but have it appear on the screen of our host machine. To do so, we need to use some sort of SSH forwarding. In this step, we configure the easier-to-use but slower X11 forwarding. A latter step will configure the faster but more complicated xpra forwarding.
+
+Enabling X11 forwarding is different based on the OS of your host computer.
+
+### Step 4.macOS: Configure X11 Forwarding
+
+For macOS, we will use XQuartz to enable X11 forwarding. Start by navigating to https://www.xquartz.org and downloading the .dmg file. Once the download is complete, click on the file and follow the instructions to install.
+
+Next, we configure our ssh settings by adding the following line to the file 
+
+### Step 4.windows: Configure X11 Forwarding
+
+TODO: Copy Shreyas' instructions here
