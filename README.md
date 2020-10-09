@@ -5,60 +5,46 @@ This repository contains instructions and example data for installing and using 
 HPCToolkit is a suite of applications for profiling and visualizing the performance of programs. It contains both static and dynamic analyses.
 Once a program has been analysed, the hpctoolkit viewers are used to visualize the gathered information.
 
-For this demo, we assume the profiling is occuring on a non-local machine over SSH. Thus, this demo includes instructions for forwarding the visualizer to your host machine over SSH.
+For this demo, we assume the profiling is occuring on rose (Dr. Strout's research machine), and the visualization is occuring on rose and being forwarded to your local machine. For forwarding, we will be using xpra.
 
-## Step 0: Select base directory
+## Step 1: Update your `PATH` variable to access HPCToolkit binaries
 
-This tutorial installs new files on your computer. The first step is to decide where those files are going to go. An easy choice for the base directory is the home directory. It is *not* recommended to use this directory as your base directory. We will refer to this directory as `$BASE` for the remainder of this tutorial. We will refer to the directory containing this README as `$DEMO` for the remainder of this tutorial.
+HPCToolkit is installed using spack, and to avoid having each person individually spack install HPCToolkit, we will all use the binaries I have installed.
 
-We run two commands to prepare our shell for this tutorial/demo. From the directory containing this README, run:
+Copy the following lines and paste them at the end of your ~/.bashrc file.
+
 ```
-export DEMO=$(pwd)
-```
-Then, navigate to your selected base directory. From that directory, run:
-```
-export BASE=$(pwd)
+export PATH=$PATH:/home/brandonneth/spack/opt/spack/linux-ubuntu16.04-broadwell/gcc-7.3.0/hpctoolkit-2020.08.03-neqpjnbzhr2eobobptso63rrmor3fpxt/bin/
+export PATH=$PATH:/home/brandonneth/hpcviewer
 ```
 
-## Step 1: Install spack
+Now, after running the command `source ~/.bashrc`, you should be able to use the HPCToolkit commands from anywhere on rose.
 
-Spack is a package manager that we will use to install HPCToolkit and its dependences. From your base directory, run the following command to download spack:
+## Step 2: Using xpra
+
+We will use xpra to do ssh forwarding because it is much more responsive than X11 forwarding.
+Start by installing xpra on your local machine from xpra.org. The server side application is already installed on rose.
+
+To use xpra, there are two parts: server side and client side. On the server side, we will begin the application we want to forward, and then link to that running application from the client side.
+
+To start the application, select a display number. This example will use the number 42, but you will need to select a different number because each number can only be used by one person.
+
+Then, using that number in place of 42, run the following command.
+
 ```
-git clone https://github.com/spack/spack.git
-```
-
-Spack comes with a premade binary, so the installation process is complete.
-
-## Step 2: Install HPCToolkit profilers using spack
-
-Spack's install command will perform the installation of HPCToolkit and its dependences:
-```
-spack/bin/spack install hpctoolkit
-```
-
-This installation will take some time. Many of the following steps can be completed while the installation proceeds. If you choose to continue while the installation proceeds, create a new shell and navigate to your base directory.
-
-## Step 3: Download HPCToolkit viewers
-
-HPCToolkit's viewing functionality is provided separately from its profiling functionality. It is provided as a pre-compiled binary. To download, run:
-```
-wget http://hpctoolkit.org/download/hpcviewer/latest/hpcviewer-linux.gtk.x86_64.tgz
+xpra start :42 --start="hpcviewer hpctoolkit-lulesh-v2.0-RAJA-seq.exe-database"
 ```
 
-For this demo, we use the regular viewer. Downloading and using the trace viewer proceeds similarly.
+This will start the xpra server, which we will then connect to from our client machine.
+On the client machine, open Xpra and select Connect.
+Change 'Mode' to SSH -> SSH. 
+Sign into lectura as the proxy server and rose as the server. 
+Finally, select Connect.
+You should see the hpcviewer window appear.
 
-## Step 4: Configure X11 Forwarding
 
-We want to run the visualizing process on the client machine, but have it appear on the screen of our host machine. To do so, we need to use some sort of SSH forwarding. In this step, we configure the easier-to-use but slower X11 forwarding. A latter step will configure the faster but more complicated xpra forwarding.
 
-Enabling X11 forwarding is different based on the OS of your host computer.
 
-### Step 4.macOS: Configure X11 Forwarding
 
-For macOS, we will use XQuartz to enable X11 forwarding. Start by navigating to https://www.xquartz.org and downloading the .dmg file. Once the download is complete, click on the file and follow the instructions to install.
 
-Next, we configure our ssh settings by adding the following line to the file 
 
-### Step 4.windows: Configure X11 Forwarding
-
-TODO: Copy Shreyas' instructions here
